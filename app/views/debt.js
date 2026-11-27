@@ -32,6 +32,8 @@ export function render() {
       const mInterest = monthlyInterestOf(d);
       const payoffM = d.balance === 0 ? 0 : extraSim.payoffMonths[d.id] ?? extraSim.months;
       const isPaidOff = d.balance <= 0;
+      const defaultPay = Math.min(d.balance, d.minPayment);
+      const defaultPlaceholder = formatIDR(defaultPay).replace(/^Rp/, '');
       return `<article class="card" style="padding:16px;">
         <div class="card-title-row">
           <h3>${escapeHtml(d.name)}</h3>
@@ -46,7 +48,7 @@ export function render() {
         </div>
         <div class="row-actions" style="justify-content:space-between;">
           ${isPaidOff ? '<span class="badge badge-ok">Terlunasi</span>' : `<form class="inline-edit-box" data-form="pay-debt" data-id="${escapeHtml(d.id)}">
-            <input type="number" name="amount" min="10000" step="10000" value="${Math.min(d.balance, d.minPayment)}" aria-label="Bayar ${escapeHtml(d.name)}">
+            <input type="number" name="amount" min="10000" step="10000" placeholder="Contoh: ${escapeHtml(defaultPlaceholder)}" aria-label="Bayar ${escapeHtml(d.name)}">
             <button type="submit" class="btn-primary">Bayar</button>
           </form>`}
           <button type="button" class="btn-danger-ghost" data-action="del-debt" data-id="${escapeHtml(d.id)}">Hapus</button>
@@ -187,7 +189,13 @@ export function mount(root, { rerender, notify }) {
     payForm.addEventListener('submit', (ev) => {
       ev.preventDefault();
       const id = payForm.getAttribute('data-id');
-      const amt = new FormData(payForm).get('amount');
+      const rawAmt = String(new FormData(payForm).get('amount') ?? '').trim();
+      let amt = rawAmt;
+      if (rawAmt === '') {
+        const debt = getState().debts.find((d) => d.id === id);
+        if (!debt || debt.balance <= 0) return;
+        amt = Math.min(debt.balance, debt.minPayment);
+      }
       if (recordDebtPayment(id, amt)) {
         notify('Pembayaran utang dicatat dan saldo diperbarui.');
         rerender();

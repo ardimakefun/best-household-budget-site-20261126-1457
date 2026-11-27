@@ -844,6 +844,11 @@ select {
   font-size: 0.83rem;
 }
 
+.inline-edit-box[data-form="pay-debt"] input {
+  width: 134px;
+  padding: 5px 6px;
+}
+
 @media (max-width: 960px) {
   .grid-3 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -963,5 +968,22 @@ select {
   .row-actions {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    gap: 3px;
+  }
+  .nav-link {
+    padding: 5px 6px;
+    font-size: 0.72rem;
+    gap: 3px;
+    white-space: nowrap;
+  }
+  .nav-link svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
   }
 }

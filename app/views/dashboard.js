@@ -129,16 +129,6 @@ export function render() {
     </div>
   </section>
 
-  <section aria-label="Progres amplop per kategori">
-    <div class="card-title-row">
-      <h2>Amplop Mingguan (6 Kategori)</h2>
-      <a href="#/amplop" class="btn-outline">Kelola & Riwayat &rarr;</a>
-    </div>
-    <div class="grid-3">
-      ${state.envelopes.map((env) => renderEnvelopeCard(env)).join('')}
-    </div>
-  </section>
-
   <section aria-label="Target tabungan">
     <div class="card-title-row">
       <h2>Target Tabungan</h2>
@@ -149,6 +139,16 @@ export function render() {
     </p>
     <div class="grid-3">
       ${goalCards}
+    </div>
+  </section>
+
+  <section aria-label="Progres amplop per kategori">
+    <div class="card-title-row">
+      <h2>Amplop Mingguan (6 Kategori)</h2>
+      <a href="#/amplop" class="btn-outline">Kelola & Riwayat &rarr;</a>
+    </div>
+    <div class="grid-3">
+      ${state.envelopes.map((env) => renderEnvelopeCard(env)).join('')}
     </div>
   </section>
 
