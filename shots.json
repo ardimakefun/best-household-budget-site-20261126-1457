@@ -1,0 +1,6 @@
+[
+  { "file": "1-dashboard.jpg", "path": "#/", "viewport": { "width": 1280, "height": 800 } },
+  { "file": "2-amplop.jpg", "path": "#/amplop", "viewport": { "width": 1280, "height": 800 } },
+  { "file": "3-utang.jpg", "path": "#/utang", "viewport": { "width": 1280, "height": 800 } },
+  { "file": "4-phone-home.jpg", "path": "#/", "viewport": { "width": 390, "height": 844 } }
+]
