@@ -138,7 +138,7 @@ export function render() {
       </label>
       <label class="field">
         <span>Sisa Saldo (Rp)</span>
-        <input type="number" name="balance" min="50000" step="10000" placeholder="1500000" required>
+        <input type="number" name="balance" min="50000" step="10000" placeholder="Contoh: 1.500.000" required>
       </label>
       <label class="field">
         <span>Bunga (%/tahun)</span>
@@ -146,7 +146,7 @@ export function render() {
       </label>
       <label class="field">
         <span>Minimum/Bln (Rp)</span>
-        <input type="number" name="minPayment" min="25000" step="5000" placeholder="150000" required>
+        <input type="number" name="minPayment" min="25000" step="5000" placeholder="Contoh: 150.000" required>
       </label>
       <div style="grid-column:1 / -1;">
         <button type="submit" class="btn-primary">Tambahkan ke Pelacak Utang</button>

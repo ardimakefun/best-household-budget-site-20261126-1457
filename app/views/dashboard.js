@@ -1,6 +1,6 @@
 import { renderEnvelopeCard, renderPageHeader } from '../components.js';
 import { simulateDebtPayoff } from '../debt-math.js';
-import { escapeHtml, formatIDR, formatPercent } from '../format.js';
+import { escapeHtml, formatIDR, formatPercent, sumBy } from '../format.js';
 import {
   WEEKS_PER_MONTH,
   addEnvelopeExpense,
@@ -52,6 +52,28 @@ export function render() {
         .join('')
     : '<p class="envelope-meta" style="margin:6px 0;">Semua tagihan bulan ini sudah lunas.</p>';
 
+  const goals = Array.isArray(state.savingsGoals) ? state.savingsGoals : [];
+  const goalMonthlyTotal = sumBy(goals, (g) => g.monthly);
+  const goalCards = goals
+    .map((g) => {
+      const pct = g.target > 0 ? Math.min(100, Math.round((g.saved / g.target) * 100)) : 0;
+      const remaining = Math.max(0, g.target - g.saved);
+      const months = g.monthly > 0 ? Math.ceil(remaining / g.monthly) : null;
+      return `<div class="card">
+        <div class="card-title-row">
+          <h3>${escapeHtml(g.name)}</h3>
+          <span class="badge badge-ok num">${pct}%</span>
+        </div>
+        <div class="kpi-value num">${formatIDR(g.saved)} <span style="font-size:0.85rem;color:var(--ink-500);font-weight:500;">dari ${formatIDR(g.target)}</span></div>
+        <div class="progress-track" style="margin:10px 0 8px;"><div class="progress-fill-green" style="width:${pct}%"></div></div>
+        <p class="envelope-meta num" style="margin:0;">
+          Sisa <strong>${formatIDR(remaining)}</strong> · ${formatIDR(g.monthly)}/bln
+          ${months !== null ? ` → tercapai dalam <strong>${months} bulan</strong>` : ''}
+        </p>
+      </div>`;
+    })
+    .join('');
+
   return `${renderPageHeader('Ringkasan Amplop Mingguan', `${state.household.name} · ${state.household.weekLabel}`, state.household)}
 
   <section class="hero-ribbon" aria-label="Saldo amplop dan kesesuaian bulanan">
@@ -72,7 +94,7 @@ export function render() {
         </label>
         <label>
           <span>Nominal (Rp)</span>
-          <input type="number" name="amount" min="1000" step="1000" placeholder="25000" required>
+          <input type="number" name="amount" min="1000" step="1000" placeholder="Contoh: 25.000" required>
         </label>
         <div class="quick-note-row">
           <label>
@@ -114,6 +136,19 @@ export function render() {
     </div>
     <div class="grid-3">
       ${state.envelopes.map((env) => renderEnvelopeCard(env)).join('')}
+    </div>
+  </section>
+
+  <section aria-label="Target tabungan">
+    <div class="card-title-row">
+      <h2>Target Tabungan</h2>
+      <span class="badge badge-ok num">${formatIDR(goalMonthlyTotal)}/bln</span>
+    </div>
+    <p class="envelope-meta num" style="margin:0 0 12px;">
+      Total alokasi ${formatIDR(goalMonthlyTotal)}/bln — sama dengan sisa penghasilan setelah amplop, tagihan, dan cicilan minimum (${formatIDR(summary.savingsResidual)}/bln).
+    </p>
+    <div class="grid-3">
+      ${goalCards}
     </div>
   </section>
 

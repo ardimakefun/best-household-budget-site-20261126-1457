@@ -100,7 +100,7 @@ export function render({ preselectedEnvelopeId } = {}) {
         </label>
         <label class="field">
           <span>Nominal (Rp)</span>
-          <input type="number" name="amount" min="500" step="500" placeholder="35000" required>
+          <input type="number" name="amount" min="500" step="500" placeholder="Contoh: 35.000" required>
         </label>
         <label class="field">
           <span>Tanggal / Hari</span>

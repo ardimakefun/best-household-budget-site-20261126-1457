@@ -127,7 +127,7 @@ export function render() {
         </label>
         <label class="field">
           <span>Nominal (Rp)</span>
-          <input type="number" name="amount" min="1000" step="1000" placeholder="50000" required>
+          <input type="number" name="amount" min="1000" step="1000" placeholder="Contoh: 50.000" required>
         </label>
         <label class="field" style="grid-column:1 / -1;">
           <span>Kategori</span>

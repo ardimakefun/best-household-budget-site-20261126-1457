@@ -92,6 +92,14 @@ export function createDemoState() {
       extraMonthly: 200000,
       strategy: 'avalanche',
     },
+    // Target tabungan: alokasi bulanan ketiga target dijumlahkan harus sama
+    // dengan sisa penghasilan (residual) Rp570.000/bln:
+    // 300.000 + 170.000 + 100.000 = 570.000.
+    savingsGoals: [
+      { id: 'goal-1', name: 'Dana Darurat', target: 10000000, saved: 5000000, monthly: 300000 },
+      { id: 'goal-2', name: 'DP Motor Baru', target: 6000000, saved: 2400000, monthly: 170000 },
+      { id: 'goal-3', name: 'Liburan Keluarga', target: 2000000, saved: 1200000, monthly: 100000 },
+    ],
     shopping: [
       { id: 'shop-1', name: 'Beras Pandan Wangi', category: 'Sembako', qty: 1, unit: 'sak 5 kg', price: 74000, checked: true },
       { id: 'shop-2', name: 'Telur Ayam Negeri', category: 'Protein', qty: 2, unit: 'kg', price: 29000, checked: true },
@@ -114,6 +122,8 @@ function loadInitialState() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.envelopes) && Array.isArray(parsed.bills) && Array.isArray(parsed.debts) && Array.isArray(parsed.shopping)) {
+        // Data tersimpan dari v1 belum punya savingsGoals — lengkapi dari contoh.
+        if (!Array.isArray(parsed.savingsGoals)) parsed.savingsGoals = createDemoState().savingsGoals;
         return parsed;
       }
     }
@@ -360,18 +370,17 @@ export function syncShoppingToEnvelope() {
   const currentSpent = sumBy(kitchenEnv.transactions, (t) => t.amount);
   const delta = checkedTotal - currentSpent;
   if (delta === 0) return false;
-  if (delta > 0) {
-    kitchenEnv.transactions.unshift({
-      id: makeId('tx'),
-      date: 'Hari ini',
-      note: 'Sinkronisasi item tercentang daftar belanja',
-      amount: delta,
-    });
-  } else {
-    kitchenEnv.transactions = checkedTotal > 0
-      ? [{ id: makeId('tx'), date: 'Hari ini', note: 'Penyesuaian total daftar belanja tercentang', amount: checkedTotal }]
-      : [];
-  }
+  // delta > 0: item tercentang bertambah → tambah satu entri selisih.
+  // delta < 0: ada item yang tidak dicentang → catat SATU entri koreksi negatif
+  // tanpa menghapus riwayat transaksi yang sudah ada. Perilaku lama mengganti
+  // seluruh array transaksi dengan satu entri penyesuaian sehingga 10 riwayat
+  // amplop hilang — itu bug, jangan diulangi.
+  kitchenEnv.transactions.unshift({
+    id: makeId('tx'),
+    date: 'Hari ini',
+    note: delta > 0 ? 'Sinkronisasi item tercentang daftar belanja' : 'Koreksi: item daftar belanja tidak dicentang',
+    amount: delta,
+  });
   persist();
   return true;
 }

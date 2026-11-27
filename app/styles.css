@@ -178,6 +178,7 @@ select {
   justify-content: space-between;
   gap: 8px;
   color: rgba(247, 243, 233, 0.76);
+  white-space: nowrap;
 }
 
 .sidebar-meta strong {

@@ -141,7 +141,7 @@ export function render() {
         </label>
         <label class="field">
           <span>Harga Satuan (Rp)</span>
-          <input type="number" name="price" min="500" step="500" placeholder="18000" required>
+          <input type="number" name="price" min="500" step="500" placeholder="Contoh: 18.000" required>
         </label>
         <div style="grid-column:1 / -1;">
           <button type="submit" class="btn-primary">Tambah ke Daftar</button>
